@@ -167,6 +167,8 @@ const summary = computed(() => store.summary);
           <dt class="text-ink-muted">Estimated Sale Price</dt><dd class="text-right">{{ money(summary.keyInformation.estimatedSellingPrice) }}</dd>
           <dt class="text-ink-muted">Purchasing Costs (incl. DP)</dt><dd class="text-right">{{ money(summary.keyInformation.purchasingCostsRequired) }}</dd>
           <dt class="text-ink-muted">Selling Costs</dt><dd class="text-right">{{ money(summary.keyInformation.sellingCosts) }}</dd>
+          <dt class="text-ink-muted" title="Annual rent ÷ total purchase price">Gross Rental Yield</dt>
+          <dd class="text-right">{{ pct(summary.keyInformation.grossRentalYieldOnCost) }}</dd>
           <dt class="text-ink-muted">P&amp;I Monthly Payment</dt><dd class="text-right">{{ money(summary.mortgage.pi.monthlyPayment) }}</dd>
           <dt class="text-ink-muted">IO Monthly (in IO)</dt><dd class="text-right">{{ money(summary.mortgage.io.monthlyPaymentDuringIO) }}</dd>
           <dt class="text-ink-muted">IO Monthly (after IO)</dt><dd class="text-right">{{ money(summary.mortgage.io.monthlyPaymentAfterIO) }}</dd>

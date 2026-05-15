@@ -29,6 +29,7 @@ services:
       NODE_ENV: production
       COOKIE_SECRET: ${COOKIE_SECRET:?must be set in .env}
       CORS_ORIGIN: ${CORS_ORIGIN:-https://investment_calculator.settleup.site}
+      APP_PASSWORD: ${APP_PASSWORD:?must be set in .env}
       LOG_LEVEL: info
     # Not exposed to host — the web container reverse-proxies /api/* over the docker network.
 

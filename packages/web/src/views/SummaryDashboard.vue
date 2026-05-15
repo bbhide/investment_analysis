@@ -1,15 +1,41 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
+import { useRoute } from 'vue-router';
 import { useScenarioStore } from '../stores/scenario';
+import { api } from '../lib/api';
 import { money, pct } from '../lib/format';
 import CashFlowChart from '../components/charts/CashFlowChart.vue';
 import EquityChart from '../components/charts/EquityChart.vue';
 
+const route = useRoute();
 const store = useScenarioStore();
 const loanType = ref<'pi' | 'io'>('pi');
 const summary = computed(() => store.summary);
 const track = computed(() => (summary.value ? summary.value[loanType.value] : null));
 const ki = computed(() => summary.value?.keyInformation);
+
+function exportPdf() {
+  // Open the report view in a new tab with ?print=1 so it auto-triggers
+  // the browser's "Save as PDF" dialog once the report has rendered.
+  const id = route.params.id;
+  if (typeof id !== 'string') return;
+  window.open(`/scenario/${id}/report?print=1`, '_blank', 'noopener');
+}
+
+const sharingReport = ref(false);
+async function shareReportLink() {
+  if (!store.id) return;
+  sharingReport.value = true;
+  try {
+    const token = store.shareToken ?? (await api.share(store.id)).shareToken;
+    store.shareToken = token;
+    const url = `${location.origin}/shared/${token}/report`;
+    await navigator.clipboard.writeText(url).catch(() => {});
+    alert(`Client report link copied to clipboard:\n${url}`);
+  } finally {
+    sharingReport.value = false;
+  }
+}
 </script>
 
 <template>
@@ -19,11 +45,17 @@ const ki = computed(() => summary.value?.keyInformation);
         <h2 class="text-lg font-semibold">Analysis Summary</h2>
         <p class="text-sm text-ink-muted">{{ ki.address || 'No address' }} · Holding {{ ki.holdingPeriodYears }} years</p>
       </div>
-      <div class="inline-flex rounded-md border border-slate-200 p-1 bg-white">
-        <button :class="['px-3 py-1 text-sm rounded', loanType === 'pi' ? 'bg-ink text-white' : 'text-ink-muted']"
-          @click="loanType = 'pi'">Principal &amp; Interest</button>
-        <button :class="['px-3 py-1 text-sm rounded', loanType === 'io' ? 'bg-ink text-white' : 'text-ink-muted']"
-          @click="loanType = 'io'">Interest Only</button>
+      <div class="flex flex-wrap items-center gap-2">
+        <button class="btn" :disabled="sharingReport" @click="shareReportLink">
+          {{ sharingReport ? 'Creating link…' : 'Share report link' }}
+        </button>
+        <button class="btn btn-primary" @click="exportPdf">Export PDF</button>
+        <div class="inline-flex rounded-md border border-slate-200 p-1 bg-white">
+          <button :class="['px-3 py-1 text-sm rounded', loanType === 'pi' ? 'bg-ink text-white' : 'text-ink-muted']"
+            @click="loanType = 'pi'">Principal &amp; Interest</button>
+          <button :class="['px-3 py-1 text-sm rounded', loanType === 'io' ? 'bg-ink text-white' : 'text-ink-muted']"
+            @click="loanType = 'io'">Interest Only</button>
+        </div>
       </div>
     </header>
 
@@ -42,8 +74,25 @@ const ki = computed(() => summary.value?.keyInformation);
     </section>
 
     <section class="grid grid-cols-2 md:grid-cols-4 gap-3">
-      <div class="kpi"><div class="kpi-label">Capitalization Rate</div><div class="kpi-value">{{ pct(track.endOfHolding.capitalizationRate) }}</div></div>
-      <div class="kpi"><div class="kpi-label">Debt Service Coverage</div><div class="kpi-value">{{ track.endOfHolding.dscr.toFixed(2) }}</div></div>
+      <div class="kpi" title="Annual rent ÷ total purchase price. Ignores expenses and financing.">
+        <div class="kpi-label">Gross Rental Yield (Cost)</div>
+        <div class="kpi-value">{{ pct(ki.grossRentalYieldOnCost) }}</div>
+      </div>
+      <div class="kpi" title="Annual rent ÷ Yr 1 market value (ARV). Ignores expenses and financing.">
+        <div class="kpi-label">Gross Rental Yield (Value)</div>
+        <div class="kpi-value">{{ pct(ki.grossRentalYieldOnValue) }}</div>
+      </div>
+      <div class="kpi" title="Annual cash flow ÷ total price. Includes ongoing costs.">
+        <div class="kpi-label">Capitalization Rate</div>
+        <div class="kpi-value">{{ pct(track.endOfHolding.capitalizationRate) }}</div>
+      </div>
+      <div class="kpi" title="After-tax cash flow ÷ annual debt service.">
+        <div class="kpi-label">Debt Service Coverage</div>
+        <div class="kpi-value">{{ track.endOfHolding.dscr.toFixed(2) }}</div>
+      </div>
+    </section>
+
+    <section class="grid grid-cols-2 md:grid-cols-4 gap-3">
       <div class="kpi"><div class="kpi-label">Loan-To-Value</div><div class="kpi-value">{{ pct(track.endOfHolding.ltv) }}</div></div>
       <div class="kpi"><div class="kpi-label">Loan-To-Cost</div><div class="kpi-value">{{ pct(track.endOfHolding.ltc) }}</div></div>
     </section>

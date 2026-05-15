@@ -64,6 +64,10 @@ export interface SummaryDashboard {
     annualRentalGrowth: number;
     purchasingCostsRequired: number;
     sellingCosts: number;
+    /** Gross Rental Yield: annual rent / total purchase price. Standard real-estate metric. */
+    grossRentalYieldOnCost: number;
+    /** Gross Rental Yield variant: annual rent / Yr 1 market value (ARV). Useful for value-add deals. */
+    grossRentalYieldOnValue: number;
   };
   mortgage: {
     pi: { annualRate: number; durationYears: number; monthlyPayment: number };
@@ -212,6 +216,12 @@ export function buildSummary(
         if (l.pctOfBase && l.pctOfBase > 0) return s + l.pctOfBase * derived.estimatedSellingPrice;
         return s + l.fixedAmount;
       }, 0),
+      grossRentalYieldOnCost:
+        derived.totalPrice > 0 ? derived.annualRentalIncome / derived.totalPrice : 0,
+      grossRentalYieldOnValue:
+        inputs.property.yr1MarketValueARV > 0
+          ? derived.annualRentalIncome / inputs.property.yr1MarketValueARV
+          : 0,
     },
     mortgage: {
       pi: {

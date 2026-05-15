@@ -1,12 +1,20 @@
 <script setup lang="ts">
-import { RouterLink, useRoute } from 'vue-router';
+import { RouterLink, useRoute, useRouter } from 'vue-router';
 import { computed } from 'vue';
 import { useScenarioStore } from '../stores/scenario';
+import { useAuthStore } from '../stores/auth';
 import { SUPPORTED_CURRENCIES } from '@inv/shared';
 
 const route = useRoute();
+const router = useRouter();
 const store = useScenarioStore();
+const auth = useAuthStore();
 const inScenario = computed(() => typeof route.params.id === 'string');
+
+async function logout() {
+  await auth.logout();
+  void router.push({ name: 'login' });
+}
 </script>
 
 <template>
@@ -37,6 +45,7 @@ const inScenario = computed(() => typeof route.params.id === 'string');
           <option v-for="c in SUPPORTED_CURRENCIES" :key="c" :value="c">{{ c }}</option>
         </select>
         <RouterLink to="/scenario/new" class="btn btn-primary">New Scenario</RouterLink>
+        <button class="btn text-xs" @click="logout">Logout</button>
       </div>
     </div>
   </header>

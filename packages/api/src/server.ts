@@ -3,8 +3,10 @@ import Fastify from 'fastify';
 import cookie from '@fastify/cookie';
 import cors from '@fastify/cors';
 import { workspacePlugin } from './plugins/workspace.js';
+import { requireAuth } from './plugins/requireAuth.js';
 import { calculateRoutes } from './routes/calculate.js';
 import { scenarioRoutes, sharedRoutes } from './routes/scenarios.js';
+import { authRoutes } from './routes/auth.js';
 
 async function build() {
   const app = Fastify({ logger: { level: process.env.LOG_LEVEL ?? 'info' } });
@@ -19,11 +21,19 @@ async function build() {
   await app.register(workspacePlugin);
 
   app.get('/api/health', async () => ({ ok: true }));
+
   await app.register(
     async (api) => {
-      await api.register(calculateRoutes);
-      await api.register(scenarioRoutes);
-      await api.register(sharedRoutes);
+      // ===== Public routes (no auth cookie required) =====
+      await api.register(authRoutes);          // /auth/login, /auth/logout, /auth/me
+      await api.register(calculateRoutes);     // /calculate (stateless math)
+      await api.register(sharedRoutes);        // /shared/:token (read-only public)
+
+      // ===== Protected routes (require valid inv_auth cookie) =====
+      await api.register(async (protectedApi) => {
+        await protectedApi.register(requireAuth);
+        await protectedApi.register(scenarioRoutes); // /scenarios CRUD + share token issuance
+      });
     },
     { prefix: '/api' },
   );
