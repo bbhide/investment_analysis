@@ -68,6 +68,16 @@ export interface SummaryDashboard {
     grossRentalYieldOnCost: number;
     /** Gross Rental Yield variant: annual rent / Yr 1 market value (ARV). Useful for value-add deals. */
     grossRentalYieldOnValue: number;
+    /** Property size (whatever unit the user picked). 0 means not provided. */
+    propertySize: number;
+    /** Unit the size is expressed in. Used to label "AED / sqft" etc. */
+    propertySizeUnit: 'sqft' | 'sqm';
+    /** purchasePrice / size — 0 when size is 0. */
+    pricePerArea: number;
+    /** estimatedSellingPrice / size — 0 when size is 0. */
+    salePricePerArea: number;
+    /** annualRentalIncome / size — 0 when size is 0. */
+    rentPerArea: number;
   };
   mortgage: {
     pi: { annualRate: number; durationYears: number; monthlyPayment: number };
@@ -221,6 +231,20 @@ export function buildSummary(
       grossRentalYieldOnValue:
         inputs.property.yr1MarketValueARV > 0
           ? derived.annualRentalIncome / inputs.property.yr1MarketValueARV
+          : 0,
+      propertySize: inputs.property.size?.value ?? 0,
+      propertySizeUnit: inputs.property.size?.unit ?? 'sqft',
+      pricePerArea:
+        (inputs.property.size?.value ?? 0) > 0
+          ? derived.totalPrice / inputs.property.size!.value
+          : 0,
+      salePricePerArea:
+        (inputs.property.size?.value ?? 0) > 0
+          ? derived.estimatedSellingPrice / inputs.property.size!.value
+          : 0,
+      rentPerArea:
+        (inputs.property.size?.value ?? 0) > 0
+          ? derived.annualRentalIncome / inputs.property.size!.value
           : 0,
     },
     mortgage: {

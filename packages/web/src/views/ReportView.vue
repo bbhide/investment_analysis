@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed, nextTick, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import type { Inputs, Comparables } from '@inv/shared';
 import type { CalcResult } from '@inv/calc';
@@ -53,16 +53,21 @@ onMounted(async () => {
     } else if (typeof route.params.token === 'string') {
       await loadFromToken(route.params.token);
     }
-    // If opened with ?print=1, fire the print dialog once the page has painted.
-    if (route.query.print === '1') {
-      // Wait for charts to render before opening print dialog
-      await new Promise((r) => setTimeout(r, 600));
-      window.print();
-    }
   } catch (e) {
     error.value = (e as Error).message;
-  } finally {
     loading.value = false;
+    return;
+  }
+  // Render the report *before* we trigger print. Setting loading=false here (not in
+  // a finally block) lets Vue swap from the "Preparing report…" placeholder to the
+  // real report layout before we ask the browser to print it.
+  loading.value = false;
+  if (route.query.print === '1') {
+    // Two paint frames for the layout, then a beat for Chart.js canvases to finish drawing.
+    await nextTick();
+    await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(() => r(null))));
+    await new Promise((r) => setTimeout(r, 900));
+    window.print();
   }
 });
 

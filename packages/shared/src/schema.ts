@@ -38,6 +38,17 @@ export const ongoingCostLineSchema = z.object({
 });
 export type OngoingCostLine = z.infer<typeof ongoingCostLineSchema>;
 
+export const areaUnitSchema = z.enum(['sqft', 'sqm']);
+export type AreaUnit = z.infer<typeof areaUnitSchema>;
+
+/** Optional with a default so scenarios saved before this field was introduced keep working. */
+export const propertySizeSchema = z
+  .object({
+    value: z.number().finite().nonnegative().default(0),
+    unit: areaUnitSchema.default('sqft'),
+  })
+  .default({ value: 0, unit: 'sqft' });
+
 export const inputsSchema = z.object({
   property: z.object({
     address: z.string().default(''),
@@ -46,6 +57,7 @@ export const inputsSchema = z.object({
     yr1MarketValueARV: z.number().finite().nonnegative(),
     holdingPeriodYears: z.number().int().min(1).max(50),
     annualAppreciation: z.number().finite(),
+    size: propertySizeSchema,
   }),
   income: z.object({
     rentalIncome: amountWithPeriodSchema,

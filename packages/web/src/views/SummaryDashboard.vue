@@ -6,6 +6,7 @@ import { api } from '../lib/api';
 import { money, pct } from '../lib/format';
 import CashFlowChart from '../components/charts/CashFlowChart.vue';
 import EquityChart from '../components/charts/EquityChart.vue';
+import ShareReportModal from '../components/ShareReportModal.vue';
 
 const route = useRoute();
 const store = useScenarioStore();
@@ -23,41 +24,62 @@ function exportPdf() {
 }
 
 const sharingReport = ref(false);
-async function shareReportLink() {
+const shareModalOpen = ref(false);
+const shareUrl = computed(() =>
+  store.shareToken ? `${location.origin}/shared/${store.shareToken}/report` : '',
+);
+
+async function openShareModal() {
   if (!store.id) return;
   sharingReport.value = true;
   try {
-    const token = store.shareToken ?? (await api.share(store.id)).shareToken;
-    store.shareToken = token;
-    const url = `${location.origin}/shared/${token}/report`;
-    await navigator.clipboard.writeText(url).catch(() => {});
-    alert(`Client report link copied to clipboard:\n${url}`);
+    if (!store.shareToken) {
+      const { shareToken } = await api.share(store.id);
+      store.shareToken = shareToken;
+    }
+    shareModalOpen.value = true;
   } finally {
     sharingReport.value = false;
   }
+}
+
+async function revokeShare() {
+  if (!store.id) return;
+  await api.unshare(store.id);
+  store.shareToken = null;
+  shareModalOpen.value = false;
 }
 </script>
 
 <template>
   <div v-if="summary && track && ki" class="space-y-6">
-    <header class="flex flex-wrap items-end justify-between gap-3">
-      <div>
-        <h2 class="text-lg font-semibold">Analysis Summary</h2>
-        <p class="text-sm text-ink-muted">{{ ki.address || 'No address' }} · Holding {{ ki.holdingPeriodYears }} years</p>
-      </div>
-      <div class="flex flex-wrap items-center gap-2">
-        <button class="btn" :disabled="sharingReport" @click="shareReportLink">
-          {{ sharingReport ? 'Creating link…' : 'Share report link' }}
-        </button>
-        <button class="btn btn-primary" @click="exportPdf">Export PDF</button>
+    <header class="space-y-3">
+      <div class="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h2 class="text-lg font-semibold">Analysis Summary</h2>
+          <p class="text-sm text-ink-muted">{{ ki.address || 'No address' }} · Holding {{ ki.holdingPeriodYears }} years</p>
+        </div>
         <div class="inline-flex rounded-md border border-slate-200 p-1 bg-white">
           <button :class="['px-3 py-1 text-sm rounded', loanType === 'pi' ? 'bg-ink text-white' : 'text-ink-muted']"
-            @click="loanType = 'pi'">Principal &amp; Interest</button>
+            @click="loanType = 'pi'">P&amp;I</button>
           <button :class="['px-3 py-1 text-sm rounded', loanType === 'io' ? 'bg-ink text-white' : 'text-ink-muted']"
             @click="loanType = 'io'">Interest Only</button>
         </div>
       </div>
+      <div class="flex flex-wrap gap-2">
+        <button class="btn flex-1 sm:flex-none" :disabled="sharingReport" @click="openShareModal">
+          {{ sharingReport ? 'Creating link…' : 'Share report link' }}
+        </button>
+        <button class="btn btn-primary flex-1 sm:flex-none" @click="exportPdf">Export PDF</button>
+      </div>
     </header>
+
+    <ShareReportModal
+      :open="shareModalOpen"
+      :url="shareUrl"
+      @close="shareModalOpen = false"
+      @revoke="revokeShare"
+    />
 
     <section class="grid grid-cols-2 md:grid-cols-4 gap-3">
       <div class="kpi"><div class="kpi-label">Property Value (Yr {{ ki.holdingPeriodYears }})</div><div class="kpi-value">{{ money(track.endOfHolding.propertyValue) }}</div></div>
