@@ -143,33 +143,23 @@ function buildForecastMonthly(
     const afterTaxCashFlow = beforeTaxCashFlow - taxPayment;
     cumAfterTax += afterTaxCashFlow;
 
-    // Excel V col: G - C10 - C191 - F23 (propertyValue - principalAmount - sellingCosts - cumFees? )
-    // Actually: G5 - $C$10 (principalAmount) - 'RE Calculations'!$C192 (selling costs for month m) - 'Mortgage Calculators (By Month)'!$F23 (loan balance? no, $F = remaining balance)
-    // Re-check: V5 = G5-$C$10-'RE Calculations'!$C192-'Mortgage Calculators (By Month)'!$F23
-    //   $C$10 in Forecast = Principal Amount (loan principal at start)
-    //   'RE Calc'!$C192 = selling costs at month m
-    //   'Mortgage Calc'!$F23 = remaining loan balance at month m
-    // So grossProfit = propertyValue - principalAmount - sellingCosts(m) - remainingBalance
-    //                = propertyValue - sellingCosts(m) - (principalAmount + remainingBalance)
-    // Hmm that doesn't make sense. Let me re-read.
-    //   $C$10 references Principal Amount in Forecast sheet's KEY INFORMATION, which equals Inputs!K8 = totalPrice - downPaymentAmount
-    //   $F23 in Mortgage Calc is the balance after payment 1.
-    // So at month m, gross profit if sold = propertyValue - (principalAmount + remainingBalance) - sellingCosts
-    // But principalAmount = original loan; remainingBalance = what's still owed.
-    // That makes profit = propertyValue - originalLoan - remainingBalance - sellingCosts
-    // That's WEIRD. Let me think again... maybe $C$10 in the Forecast sheet refers to something else.
-    // Looking at the Forecast sheet rows we examined: B10 = "Principal Amount" C10=Inputs!K8 (loan principal).
-    // Hmm, then formula G-C10-sellingCosts-remainingBalance is strange.
-    // BUT consider that propertyValue grew, and we subtract original loan + remaining balance (which is most/all of loan) means... actually this is closer to net equity gain.
-    // I'll trust the formula. Excel: G - C10 - C191 - F23
+    // Excel Forecast (By Month) col V: V5 = G5 - $C$10 - 'RE Calc'!$C192 - 'Mortgage Calc'!$F23
+    //   G5      = propertyValue
+    //   $C$10   = Purchasing Costs Incl. Down Payment   (= Inputs!K18)   ← NOT loan principal
+    //   $C192   = selling costs at month m
+    //   $F23    = remaining loan balance at month m
+    // So: grossProfitIfSold = propertyValue - purchasingCostsInclDP - sellingCosts - remainingLoanBalance
+    // i.e. net sale proceeds (PV − sellCosts − loanBalance) minus what was initially put in (DP + closing).
+    // ROI uses the same denominator:  W5 = V5/$C$10  ;  Z5 = (V5+U5)/$C$10
     const remainingBalance = a ? a.balance : derived.principalAmount;
     const sellCost = sellingCostAtMonth(m);
-    const grossProfitIfSold = propertyValue - derived.principalAmount - sellCost - remainingBalance;
+    const investmentBasis = derived.purchasingCostsInclDownPayment;
+    const grossProfitIfSold = propertyValue - investmentBasis - sellCost - remainingBalance;
 
-    const grossROI = derived.principalAmount > 0 ? grossProfitIfSold / derived.principalAmount : 0;
+    const grossROI = investmentBasis > 0 ? grossProfitIfSold / investmentBasis : 0;
     const grossAnnualizedROI = grossROI / (m / 12);
     const netProfitIfSold = grossProfitIfSold + cumAfterTax;
-    const netROI = derived.principalAmount > 0 ? netProfitIfSold / derived.principalAmount : 0;
+    const netROI = investmentBasis > 0 ? netProfitIfSold / investmentBasis : 0;
     const netAnnualizedROI = netROI / (m / 12);
 
     rows.push({

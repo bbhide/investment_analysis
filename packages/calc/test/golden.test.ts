@@ -63,6 +63,14 @@ describe('Golden parity — The Lofts (from xlsx)', () => {
     near(yN.totalOngoingCosts, exp.piYearN.totalOngoingCosts, 1);
     near(yN.beforeTaxCashFlow, exp.piYearN.beforeTaxCashFlow, 1);
   });
+
+  it('P&I year N gross & net profit if sold match Excel', () => {
+    // These flow through the Excel formula: profit = PV - purchasingCostsInclDP - sellingCosts - loanBalance.
+    // Catches the bug where principalAmount was being used instead of purchasingCostsInclDP.
+    const yN = result.forecastYearly.pi[inputs.property.holdingPeriodYears - 1]!;
+    near(yN.grossProfitIfSold, exp.piYearN.grossProfitIfSold, 1);
+    near(yN.netProfitIfSold, exp.piYearN.netProfitIfSold, 1);
+  });
 });
 
 describe('Synthetic loan scenario — exercises PMT/PPMT/IPMT', () => {
