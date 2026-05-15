@@ -1,0 +1,385 @@
+{
+  "inputs": {
+    "property": {
+      "address": "The Lofts",
+      "totalPurchasePrice": 1499950.0,
+      "downPayment": {
+        "mode": "percent",
+        "value": 1.0
+      },
+      "yr1MarketValueARV": 1635000.0,
+      "holdingPeriodYears": 5,
+      "annualAppreciation": 0.05
+    },
+    "income": {
+      "rentalIncome": {
+        "amount": 103000.0,
+        "period": "annum"
+      },
+      "otherIncome": {
+        "amount": 0.0,
+        "period": "week"
+      },
+      "annualRentalGrowth": 0.05
+    },
+    "loan": {
+      "type": "PI",
+      "pi": {
+        "annualRate": 0.045,
+        "durationYears": 30,
+        "fees": {
+          "amount": 100.0,
+          "period": "annum"
+        }
+      },
+      "io": {
+        "annualRate": 0.0475,
+        "ioDurationYears": 5,
+        "standardRateAfterIO": 0.045,
+        "totalDurationYears": 30,
+        "fees": {
+          "amount": 120.0,
+          "period": "annum"
+        }
+      }
+    },
+    "purchasingCosts": [
+      {
+        "label": "Legal fees",
+        "pctOfBase": 0.0,
+        "fixedAmount": 0.0,
+        "taxDeductible": false
+      },
+      {
+        "label": "Conveyancer/Solicitor Fees",
+        "pctOfBase": 0.0,
+        "fixedAmount": 4500.0,
+        "taxDeductible": false
+      },
+      {
+        "label": "Strata Report",
+        "pctOfBase": 0.0,
+        "fixedAmount": 0.0,
+        "taxDeductible": false
+      },
+      {
+        "label": "Mortgage registration fee 0.25%",
+        "pctOfBase": 0.0,
+        "fixedAmount": 0.0,
+        "taxDeductible": false
+      },
+      {
+        "label": "Mortgage Insurance",
+        "pctOfBase": 0.0,
+        "fixedAmount": 0.0,
+        "taxDeductible": false
+      },
+      {
+        "label": "Valuation/Appraisal Fees",
+        "pctOfBase": 0.0,
+        "fixedAmount": 0.0,
+        "taxDeductible": false
+      },
+      {
+        "label": "4% Dubai Land department",
+        "pctOfBase": 0.04,
+        "fixedAmount": 700.0,
+        "taxDeductible": false
+      },
+      {
+        "label": "NOC",
+        "pctOfBase": 0.0,
+        "fixedAmount": 2000.0,
+        "taxDeductible": false
+      },
+      {
+        "label": "Utilities and Services (Connection Fee)",
+        "pctOfBase": 0.0,
+        "fixedAmount": 0.0,
+        "taxDeductible": false
+      },
+      {
+        "label": "DLD Admin fee",
+        "pctOfBase": 0.0,
+        "fixedAmount": 580.0,
+        "taxDeductible": false
+      },
+      {
+        "label": "Travel Expenses",
+        "pctOfBase": 0.0,
+        "fixedAmount": 0.0,
+        "taxDeductible": false
+      },
+      {
+        "label": "Renovation/Maintenance",
+        "pctOfBase": 0.0,
+        "fixedAmount": 0.0,
+        "taxDeductible": false
+      },
+      {
+        "label": "Furnishing/Upgrades",
+        "pctOfBase": 0.0,
+        "fixedAmount": 0.0,
+        "taxDeductible": false
+      },
+      {
+        "label": "Letting Fee/Advertising Fee",
+        "pctOfBase": 0.0,
+        "fixedAmount": 0.0,
+        "taxDeductible": false
+      },
+      {
+        "label": "Buyer's Agent",
+        "pctOfBase": 0.02,
+        "fixedAmount": 0.0,
+        "taxDeductible": false
+      },
+      {
+        "label": "Trustee Office fee",
+        "pctOfBase": 0.0,
+        "fixedAmount": 4000.0,
+        "taxDeductible": false
+      },
+      {
+        "label": "Other Purchasing Costs 1",
+        "pctOfBase": 0.0,
+        "fixedAmount": 0.0,
+        "taxDeductible": false
+      },
+      {
+        "label": "Other Purchasing Costs 2",
+        "pctOfBase": 0.0,
+        "fixedAmount": 0.0,
+        "taxDeductible": false
+      },
+      {
+        "label": "Other Purchasing Costs 3",
+        "pctOfBase": 0.0,
+        "fixedAmount": 0.0,
+        "taxDeductible": false
+      },
+      {
+        "label": "Other Purchasing Costs 4",
+        "pctOfBase": 0.0,
+        "fixedAmount": 0.0,
+        "taxDeductible": false
+      },
+      {
+        "label": "Other Purchasing Costs 5",
+        "pctOfBase": 0.0,
+        "fixedAmount": 0.0,
+        "taxDeductible": false
+      }
+    ],
+    "ongoingCosts": [
+      {
+        "label": "Miscellanous",
+        "pctOfIncome": 0.0,
+        "fixedAmount": 0.0,
+        "period": "annum"
+      },
+      {
+        "label": "Other Misc 2",
+        "pctOfIncome": 0.0,
+        "fixedAmount": 0.0,
+        "period": "annum"
+      },
+      {
+        "label": "Service Charges",
+        "pctOfIncome": 0.0,
+        "fixedAmount": 10158.0,
+        "period": "annum"
+      },
+      {
+        "label": "Utilities and Services",
+        "pctOfIncome": 0.0,
+        "fixedAmount": 600.0,
+        "period": "month"
+      },
+      {
+        "label": "Strata/Body Corporate Fees",
+        "pctOfIncome": 0.0,
+        "fixedAmount": 0.0,
+        "period": "annum"
+      },
+      {
+        "label": "Home/Building Insurance",
+        "pctOfIncome": 0.0,
+        "fixedAmount": 0.0,
+        "period": "annum"
+      },
+      {
+        "label": "Contents Insurance",
+        "pctOfIncome": 0.0,
+        "fixedAmount": 500.0,
+        "period": "annum"
+      },
+      {
+        "label": "Income Protection Insurance",
+        "pctOfIncome": 0.0,
+        "fixedAmount": 0.0,
+        "period": "annum"
+      },
+      {
+        "label": "Provision for Vacancy",
+        "pctOfIncome": 0.02,
+        "fixedAmount": 0.0,
+        "period": "annum"
+      },
+      {
+        "label": "Provision for Maintainance & Capex",
+        "pctOfIncome": 0.01,
+        "fixedAmount": 0.0,
+        "period": "month"
+      },
+      {
+        "label": "Management Fees",
+        "pctOfIncome": 0.08,
+        "fixedAmount": 0.0,
+        "period": "month"
+      },
+      {
+        "label": "Other Maintenance misc",
+        "pctOfIncome": 0.0,
+        "fixedAmount": 0.0,
+        "period": "annum"
+      },
+      {
+        "label": "Other Ongoing Costs 1",
+        "pctOfIncome": 0.0,
+        "fixedAmount": 0.0,
+        "period": "month"
+      },
+      {
+        "label": "Other Ongoing Costs 2",
+        "pctOfIncome": 0.0,
+        "fixedAmount": 0.0,
+        "period": "month"
+      },
+      {
+        "label": "Other Ongoing Costs 3",
+        "pctOfIncome": 0.0,
+        "fixedAmount": 0.0,
+        "period": "month"
+      },
+      {
+        "label": "Other Ongoing Costs 4",
+        "pctOfIncome": 0.0,
+        "fixedAmount": 0.0,
+        "period": "month"
+      },
+      {
+        "label": "Other Ongoing Costs 5",
+        "pctOfIncome": 0.0,
+        "fixedAmount": 0.0,
+        "period": "month"
+      }
+    ],
+    "sellingCosts": [
+      {
+        "label": "Advertising & Marketing Costs",
+        "pctOfBase": 0.0,
+        "fixedAmount": 0.0,
+        "taxDeductible": false
+      },
+      {
+        "label": "Real Estate Agency Commission",
+        "pctOfBase": 0.02,
+        "fixedAmount": 0.0,
+        "taxDeductible": false
+      },
+      {
+        "label": "Legal Fees",
+        "pctOfBase": 0.0,
+        "fixedAmount": 4500.0,
+        "taxDeductible": false
+      },
+      {
+        "label": "Contingency",
+        "pctOfBase": 0.0,
+        "fixedAmount": 0.0,
+        "taxDeductible": false
+      },
+      {
+        "label": "Renovation/Maintainance (to sell)",
+        "pctOfBase": 0.0,
+        "fixedAmount": 0.0,
+        "taxDeductible": false
+      },
+      {
+        "label": "Other Closing Costs 1",
+        "pctOfBase": 0.0,
+        "fixedAmount": 0.0,
+        "taxDeductible": false
+      },
+      {
+        "label": "Other Closing Costs 2",
+        "pctOfBase": 0.0,
+        "fixedAmount": 0.0,
+        "taxDeductible": false
+      },
+      {
+        "label": "Other Closing Costs 3",
+        "pctOfBase": 0.0,
+        "fixedAmount": 0.0,
+        "taxDeductible": false
+      },
+      {
+        "label": "Other Closing Costs 4",
+        "pctOfBase": 0.0,
+        "fixedAmount": 0.0,
+        "taxDeductible": false
+      },
+      {
+        "label": "Other Closing Costs 5",
+        "pctOfBase": 0.0,
+        "fixedAmount": 0.0,
+        "taxDeductible": false
+      }
+    ],
+    "forecast": {
+      "annualInflation": 0.0,
+      "taxBracket": 0.0,
+      "considerDepreciation": false,
+      "depreciableValue": {
+        "mode": "percent",
+        "value": 0.25
+      },
+      "depreciationYears": 30
+    }
+  },
+  "expected": {
+    "derived": {
+      "totalPrice": 1499950.0,
+      "downPaymentPct": 1.0,
+      "downPaymentAmount": 1499950.0,
+      "principalAmount": 0.0,
+      "estimatedSellingPrice": 2086720.3546875003,
+      "purchasingCostsRequired": 1601027.0,
+      "sellingCosts": 46234.40709375001,
+      "monthlyPIPayment": 100.0,
+      "monthlyIOPaymentDuringIO": 120.0,
+      "monthlyIOPaymentAfterIO": 120.0
+    },
+    "piYear1": {
+      "rent": 103000.0,
+      "totalOngoingCosts": 29187.999999999996,
+      "loanRepayment": 0.0,
+      "beforeTaxCashFlow": 73812.0
+    },
+    "piYearN": {
+      "propertyValue": 2086720.3546875,
+      "equity": 2086720.3546875,
+      "rent": 125197.14375,
+      "totalOngoingCosts": 31629.6858125,
+      "beforeTaxCashFlow": 93567.45793749999,
+      "grossProfitIfSold": 439458.947593757,
+      "netProfitIfSold": 856703.5642812571
+    },
+    "piTotals": {
+      "totalPayment": 0.0,
+      "totalPrincipal": 0.0,
+      "totalInterest": 3000.00000000001
+    }
+  }
+}

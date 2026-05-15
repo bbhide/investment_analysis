@@ -1,0 +1,47 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: inv
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?must be set in .env}
+      POSTGRES_DB: inv
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U inv -d inv"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    # Not exposed to the host — only the api service talks to it via the docker network.
+
+  api:
+    build:
+      context: .
+      dockerfile: packages/api/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://inv:${POSTGRES_PASSWORD}@postgres:5432/inv?schema=public
+      PORT: "4000"
+      NODE_ENV: production
+      COOKIE_SECRET: ${COOKIE_SECRET:?must be set in .env}
+      CORS_ORIGIN: ${CORS_ORIGIN:-https://investment_calculator.settleup.site}
+      LOG_LEVEL: info
+    # Not exposed to host — the web container reverse-proxies /api/* over the docker network.
+
+  web:
+    build:
+      context: .
+      dockerfile: packages/web/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - api
+    ports:
+      # Bound to localhost only; host nginx (investment_calculator.settleup.site) proxies to this.
+      - "127.0.0.1:8082:80"
+
+volumes:
+  postgres_data:

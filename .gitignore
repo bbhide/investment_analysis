@@ -1,0 +1,12 @@
+node_modules
+dist
+.env
+.env.local
+*.log
+.DS_Store
+coverage
+.pnpm-store
+packages/*/dist
+packages/api/prisma/dev.db
+packages/web/dist
+.vite
